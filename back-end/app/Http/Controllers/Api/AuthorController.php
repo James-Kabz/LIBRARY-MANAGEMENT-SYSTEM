@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
-class AuthorController extends Controller
+class AuthorController extends Controller implements HasMiddleware
 {
     /**
      * @var AuthorService
@@ -24,7 +24,7 @@ class AuthorController extends Controller
      * @param AuthorService $authorService
      */
 
-     public static function middlware()
+     public static function middleware()
      {
         return [
             new Middleware('auth:sanctum'),
