@@ -3,7 +3,7 @@ import { Loading } from "../ui/Loading"
 import { Pagination } from "../ui/Pagination"
 
 export const ReservationList = ({
-  reservations,
+  reservations = [], // Default to empty array
   pagination,
   isLoading,
   onPageChange,
@@ -18,7 +18,10 @@ export const ReservationList = ({
     )
   }
 
-  if (reservations.length === 0) {
+  // Handle case where reservations is undefined or null
+  const safeReservations = Array.isArray(reservations) ? reservations : []
+
+  if (safeReservations.length === 0) {
     return (
       <div className="text-center py-8">
         <p className="text-gray-500">No reservations found.</p>
@@ -29,7 +32,7 @@ export const ReservationList = ({
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {reservations.map((reservation) => (
+        {safeReservations.map((reservation) => (
           <ReservationCard
             key={reservation.id}
             reservation={reservation}

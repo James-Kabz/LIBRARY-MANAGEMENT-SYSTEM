@@ -4,20 +4,19 @@ import { useEffect } from "react"
 import { ReservationList } from "../components/reservations/ReservationList"
 import { useAuthStore } from "../stores/authStore"
 import { useReservationStore } from "../stores/reservationStore"
-import toast from "react-hot-toast"
 
 export const MyReservations = () => {
   const { user } = useAuthStore()
   const { reservations, pagination, isLoading, fetchUserReservations, returnBook } = useReservationStore()
 
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
       fetchUserReservations(user.id)
     }
-  }, [user])
+  }, [user?.id, fetchUserReservations])
 
   const handlePageChange = (page) => {
-    if (user) {
+    if (user?.id) {
       fetchUserReservations(user.id, { page })
     }
   }
@@ -25,12 +24,13 @@ export const MyReservations = () => {
   const handleReturnBook = async (reservation) => {
     try {
       await returnBook(reservation.id)
-      toast.success("Book returned successfully!")
-      if (user) {
-        fetchUserReservations(user.id) // Refresh the list
+      // Refresh the list after successful return
+      if (user?.id) {
+        fetchUserReservations(user.id)
       }
     } catch (error) {
-      // Error handling is done in the service layer
+      // Error handling is done in the store
+      console.error("Failed to return book:", error)
     }
   }
 

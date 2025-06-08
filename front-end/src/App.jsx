@@ -11,6 +11,11 @@ import { RegisterForm } from "./components/auth/RegisterForm"
 import { Dashboard } from "./pages/Dashboard"
 import { Books } from "./pages/Books"
 import { MyReservations } from "./pages/MyReservations"
+import { Authors } from "./pages/Authors"
+import { Categories } from "./pages/Categories"
+import { Users } from "./pages/Users"
+import { Reservations } from "./pages/Reservations"
+import { Reports } from "./pages/Reports"
 import { Loading } from "./components/ui/Loading"
 
 function App() {
@@ -72,10 +77,34 @@ function App() {
 
                     {/* Admin/Librarian routes */}
                     <Route
+                      path="/authors"
+                      element={
+                        <ProtectedRoute requiredRoles={["admin", "librarian"]}>
+                          <Authors />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/categories"
+                      element={
+                        <ProtectedRoute requiredRoles={["admin", "librarian"]}>
+                          <Categories />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
                       path="/reservations"
                       element={
                         <ProtectedRoute requiredRoles={["admin", "librarian"]}>
-                          <div>Reservations Management (Coming Soon)</div>
+                          <Reservations />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/reports"
+                      element={
+                        <ProtectedRoute requiredRoles={["admin", "librarian"]}>
+                          <Reports />
                         </ProtectedRoute>
                       }
                     />
@@ -83,7 +112,7 @@ function App() {
                       path="/users"
                       element={
                         <ProtectedRoute requiredRoles={["admin"]}>
-                          <div>User Management (Coming Soon)</div>
+                          <Users />
                         </ProtectedRoute>
                       }
                     />

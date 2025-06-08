@@ -1,98 +1,103 @@
 import { create } from "zustand"
 import { bookService } from "../services/bookService"
+import toast from "react-hot-toast"
 
 export const useBookStore = create((set, get) => ({
   books: [],
-  currentBook: null,
   pagination: null,
   isLoading: false,
   searchQuery: "",
   selectedCategory: null,
   selectedAuthor: null,
 
-  // Actions
-  fetchBooks: async (params) => {
+  setSearchQuery: (query) => set({ searchQuery: query }),
+
+  fetchBooks: async (params = {}) => {
     set({ isLoading: true })
     try {
       const response = await bookService.getBooks(params)
-      const { data, ...pagination } = response.data
-      set({ books: data, pagination, isLoading: false })
+      set({
+        books: response.data || [], // Fix: extract books from response.data
+        pagination: {
+          current_page: response.current_page,
+          last_page: response.last_page,
+          per_page: response.per_page,
+          total: response.total,
+          from: response.from,
+          to: response.to,
+        },
+        isLoading: false,
+      })
     } catch (error) {
       set({ isLoading: false })
+      toast.error("Failed to fetch books")
     }
   },
 
-  fetchBook: async (id) => {
-    set({ isLoading: true })
-    try {
-      const response = await bookService.getBook(id)
-      set({ currentBook: response.data, isLoading: false })
-    } catch (error) {
-      set({ isLoading: false })
-    }
-  },
-
-  searchBooks: async (query, params) => {
+  searchBooks: async (query, params = {}) => {
     set({ isLoading: true, searchQuery: query })
     try {
       const response = await bookService.searchBooks(query, params)
-      const { data, ...pagination } = response.data
-      set({ books: data, pagination, isLoading: false })
+      set({
+        books: response.data || [], // Fix: extract books from response.data
+        pagination: {
+          current_page: response.current_page,
+          last_page: response.last_page,
+          per_page: response.per_page,
+          total: response.total,
+          from: response.from,
+          to: response.to,
+        },
+        isLoading: false,
+      })
     } catch (error) {
       set({ isLoading: false })
+      toast.error("Failed to search books")
     }
   },
 
-  filterByCategory: async (categoryId) => {
+  filterByCategory: async (categoryId, params = {}) => {
     set({ isLoading: true, selectedCategory: categoryId })
     try {
-      if (categoryId) {
-        const response = await bookService.getBooksByCategory(categoryId)
-        const { data, ...pagination } = response.data
-        set({ books: data, pagination, isLoading: false })
-      } else {
-        get().fetchBooks()
-      }
+      const response = await bookService.getBooksByCategory(categoryId, params)
+      set({
+        books: response.data || [], // Fix: extract books from response.data
+        pagination: {
+          current_page: response.current_page,
+          last_page: response.last_page,
+          per_page: response.per_page,
+          total: response.total,
+          from: response.from,
+          to: response.to,
+        },
+        isLoading: false,
+      })
     } catch (error) {
       set({ isLoading: false })
+      toast.error("Failed to filter books by category")
     }
   },
 
-  filterByAuthor: async (authorId) => {
+  filterByAuthor: async (authorId, params = {}) => {
     set({ isLoading: true, selectedAuthor: authorId })
     try {
-      if (authorId) {
-        const response = await bookService.getBooksByAuthor(authorId)
-        const { data, ...pagination } = response.data
-        set({ books: data, pagination, isLoading: false })
-      } else {
-        get().fetchBooks()
-      }
+      const response = await bookService.getBooksByAuthor(authorId, params)
+      set({
+        books: response.data || [], // Fix: extract books from response.data
+        pagination: {
+          current_page: response.current_page,
+          last_page: response.last_page,
+          per_page: response.per_page,
+          total: response.total,
+          from: response.from,
+          to: response.to,
+        },
+        isLoading: false,
+      })
     } catch (error) {
       set({ isLoading: false })
+      toast.error("Failed to filter books by author")
     }
-  },
-
-  createBook: async (data) => {
-    await bookService.createBook(data)
-    get().fetchBooks()
-  },
-
-  updateBook: async (id, data) => {
-    await bookService.updateBook(id, data)
-    get().fetchBooks()
-    if (get().currentBook?.id === id) {
-      get().fetchBook(id)
-    }
-  },
-
-  deleteBook: async (id) => {
-    await bookService.deleteBook(id)
-    get().fetchBooks()
-  },
-
-  setSearchQuery: (query) => {
-    set({ searchQuery: query })
   },
 
   clearFilters: () => {
@@ -102,5 +107,38 @@ export const useBookStore = create((set, get) => ({
       selectedAuthor: null,
     })
     get().fetchBooks()
+  },
+
+  createBook: async (bookData) => {
+    try {
+      await bookService.createBook(bookData)
+      toast.success("Book created successfully")
+      get().fetchBooks() // Refresh the list
+    } catch (error) {
+      toast.error("Failed to create book")
+      throw error
+    }
+  },
+
+  updateBook: async (id, bookData) => {
+    try {
+      await bookService.updateBook(id, bookData)
+      toast.success("Book updated successfully")
+      get().fetchBooks() // Refresh the list
+    } catch (error) {
+      toast.error("Failed to update book")
+      throw error
+    }
+  },
+
+  deleteBook: async (id) => {
+    try {
+      await bookService.deleteBook(id)
+      toast.success("Book deleted successfully")
+      get().fetchBooks() // Refresh the list
+    } catch (error) {
+      toast.error("Failed to delete book")
+      throw error
+    }
   },
 }))
