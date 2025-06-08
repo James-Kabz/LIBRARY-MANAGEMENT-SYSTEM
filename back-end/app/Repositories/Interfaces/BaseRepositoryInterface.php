@@ -62,4 +62,5 @@ interface BaseRepositoryInterface
      * @return bool
      */
     public function deleteById(int $modelId): bool;
+    
 }

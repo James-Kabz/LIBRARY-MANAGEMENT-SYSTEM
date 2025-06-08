@@ -22,6 +22,7 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'email_verified_at' => $this->email_verified_at,
             'roles' => $this->roles->pluck('name'),
+            'permissions' => $this->permissions->pluck('name'),
             'reservations' => $this->whenLoaded('reservations', function () {
                 return ReservationResource::collection($this->reservations);
             }),

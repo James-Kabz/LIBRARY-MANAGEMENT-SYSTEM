@@ -21,4 +21,15 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
      * @return Collection
      */
     public function getUsersWithOverdueBooks(): Collection;
+
+    /**
+     * Count users joined in a specific month.
+     *
+     * @param string $month
+     * @return int
+     */
+    public function countUsersJoinedInMonth(string $month): int;
+
+    // count users
+    public function count(): int;
 }

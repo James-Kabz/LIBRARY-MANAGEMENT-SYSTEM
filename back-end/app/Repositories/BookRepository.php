@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Book;
 use App\Repositories\Interfaces\BookRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class BookRepository extends BaseRepository implements BookRepositoryInterface
@@ -70,5 +71,41 @@ class BookRepository extends BaseRepository implements BookRepositoryInterface
         $book = $this->findById($bookId);
         $book->available_copies += $change;
         return $book->save();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countAvailableBooks(): int
+    {
+        return $this->model->where('available_copies', '>', 0)->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPopularBooks(int $limit = 5): Collection
+    {
+        return $this->model->withCount('reservations')
+            ->orderBy('reservations_count', 'desc')
+            ->with(['author', 'categories'])
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countBooksAddedInMonth(string $month): int
+    {
+        return $this->model->whereYear('created_at', substr($month, 0, 4))
+            ->whereMonth('created_at', substr($month, 5, 2))
+            ->count();
+    }
+
+    // count books
+    public function count(): int
+    {
+        return $this->model->count();
     }
 }

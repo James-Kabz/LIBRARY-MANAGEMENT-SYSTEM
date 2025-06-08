@@ -40,4 +40,52 @@ interface ReservationRepositoryInterface extends BaseRepositoryInterface
      * @return bool
      */
     public function markAsReturned(int $reservationId): bool;
+
+    /**
+     * Count active reservations.
+     *
+     * @return int
+     */
+    public function countActiveReservations(): int;
+
+    /**
+     * Count overdue reservations.
+     *
+     * @return int
+     */
+    public function countOverdueReservations(): int;
+
+    /**
+     * Count returned reservations.
+     *
+     * @return int
+     */
+    public function countReturnedReservations(): int;
+
+    /**
+     * Get recent reservations.
+     *
+     * @param int $limit
+     * @return Collection
+     */
+    public function getRecentReservations(int $limit = 10): Collection;
+
+    /**
+     * Count reservations in a specific month.
+     *
+     * @param string $month
+     * @return int
+     */
+    public function countReservationsInMonth(string $month): int;
+
+    /**
+     * Count books returned in a specific month.
+     *
+     * @param string $month
+     * @return int
+     */
+    public function countBooksReturnedInMonth(string $month): int;
+
+    // count reservations
+    public function count(): int;
 }

@@ -123,4 +123,25 @@ class UserService
         $users = $this->userRepository->getUsersWithOverdueBooks();
         return UserResource::collection($users);
     }
+
+    /**
+     * Get total users count.
+     *
+     * @return int
+     */
+    public function getTotalUsersCount(): int
+    {
+        return $this->userRepository->count();
+    }
+
+    /**
+     * Get users joined in a specific month.
+     *
+     * @param string $month (Y-m format)
+     * @return int
+     */
+    public function getUsersJoinedInMonth(string $month): int
+    {
+        return $this->userRepository->countUsersJoinedInMonth($month);
+    }
 }

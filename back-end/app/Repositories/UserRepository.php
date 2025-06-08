@@ -42,4 +42,20 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                   ->with('book');
         }])->get();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function countUsersJoinedInMonth(string $month): int
+    {
+        return $this->model->whereYear('created_at', substr($month, 0, 4))
+            ->whereMonth('created_at', substr($month, 5, 2))
+            ->count();
+    }
+
+    // count users
+    public function count(): int
+    {
+        return $this->model->count();
+    }
 }

@@ -51,4 +51,30 @@ interface BookRepositoryInterface extends BaseRepositoryInterface
      * @return bool
      */
     public function updateAvailability(int $bookId, int $change): bool;
+
+    /**
+     * Count available books.
+     *
+     * @return int
+     */
+    public function countAvailableBooks(): int;
+
+    /**
+     * Get popular books.
+     *
+     * @param int $limit
+     * @return Collection
+     */
+    public function getPopularBooks(int $limit = 5): Collection;
+
+    /**
+     * Count books added in a specific month.
+     *
+     * @param string $month
+     * @return int
+     */
+    public function countBooksAddedInMonth(string $month): int;
+
+    // count books
+    public function count(): int;
 }

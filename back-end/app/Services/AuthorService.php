@@ -96,4 +96,14 @@ class AuthorService
     {
         return $this->authorRepository->deleteById($id);
     }
+
+    /**
+     * Get total authors count.
+     *
+     * @return int
+     */
+    public function getTotalAuthorsCount(): int
+    {
+        return $this->authorRepository->count();
+    }
 }

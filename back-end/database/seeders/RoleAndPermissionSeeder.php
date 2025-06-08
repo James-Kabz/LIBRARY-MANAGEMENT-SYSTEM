@@ -46,6 +46,9 @@ class RoleAndPermissionSeeder extends Seeder
             'view reservations',
             'create reservations',
             'edit reservations',
+
+            // reports permissions
+            'view reports',
         ];
 
         foreach ($permissions as $permission) {
@@ -74,7 +77,9 @@ class RoleAndPermissionSeeder extends Seeder
             'view authors',
             'view categories',
             'view reservations',
-            'create reservations'
+            'create reservations',
+            'edit reservations',
+            'view reports',
         ];
         $memberRole->givePermissionTo($memberPermissions);
     }

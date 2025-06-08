@@ -213,4 +213,78 @@ class ReservationService
             event(new ReservationOverdue($reservation));
         }
     }
+
+    /**
+     * Get total reservations count.
+     *
+     * @return int
+     */
+    public function getTotalReservationsCount(): int
+    {
+        return $this->reservationRepository->count();
+    }
+
+    /**
+     * Get active reservations count.
+     *
+     * @return int
+     */
+    public function getActiveReservationsCount(): int
+    {
+        return $this->reservationRepository->countActiveReservations();
+    }
+
+    /**
+     * Get overdue reservations count.
+     *
+     * @return int
+     */
+    public function getOverdueReservationsCount(): int
+    {
+        return $this->reservationRepository->countOverdueReservations();
+    }
+
+    /**
+     * Get returned reservations count.
+     *
+     * @return int
+     */
+    public function getReturnedReservationsCount(): int
+    {
+        return $this->reservationRepository->countReturnedReservations();
+    }
+
+    /**
+     * Get recent reservations.
+     *
+     * @param int $limit
+     * @return AnonymousResourceCollection
+     */
+    public function getRecentReservations(int $limit = 10): AnonymousResourceCollection
+    {
+        $reservations = $this->reservationRepository->getRecentReservations($limit);
+        return ReservationResource::collection($reservations);
+    }
+
+    /**
+     * Get reservations in a specific month.
+     *
+     * @param string $month (Y-m format)
+     * @return int
+     */
+    public function getReservationsInMonth(string $month): int
+    {
+        return $this->reservationRepository->countReservationsInMonth($month);
+    }
+
+    /**
+     * Get books returned in a specific month.
+     *
+     * @param string $month (Y-m format)
+     * @return int
+     */
+    public function getBooksReturnedInMonth(string $month): int
+    {
+        return $this->reservationRepository->countBooksReturnedInMonth($month);
+    }
 }

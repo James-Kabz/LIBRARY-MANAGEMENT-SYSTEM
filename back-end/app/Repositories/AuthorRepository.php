@@ -26,4 +26,12 @@ class AuthorRepository extends BaseRepository implements AuthorRepositoryInterfa
         return $this->model->where('name', 'like', "%{$query}%")
             ->paginate($perPage);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return $this->model->count();
+    }
 }

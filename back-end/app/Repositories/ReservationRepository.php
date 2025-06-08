@@ -63,4 +63,74 @@ class ReservationRepository extends BaseRepository implements ReservationReposit
         $reservation->status = 'returned';
         return $reservation->save();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function countActiveReservations(): int
+    {
+        return $this->model->where('status', 'borrowed')
+            ->whereNull('returned_at')
+            ->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countOverdueReservations(): int
+    {
+        return $this->model->where('status', 'borrowed')
+            ->where('due_date', '<', now())
+            ->whereNull('returned_at')
+            ->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countReturnedReservations(): int
+    {
+        return $this->model->where('status', 'returned')
+            ->whereNotNull('returned_at')
+            ->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRecentReservations(int $limit = 10): Collection
+    {
+        return $this->model->with(['user', 'book', 'book.author'])
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countReservationsInMonth(string $month): int
+    {
+        return $this->model->whereYear('created_at', substr($month, 0, 4))
+            ->whereMonth('created_at', substr($month, 5, 2))
+            ->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countBooksReturnedInMonth(string $month): int
+    {
+        return $this->model->where('status', 'returned')
+            ->whereNotNull('returned_at')
+            ->whereYear('returned_at', substr($month, 0, 4))
+            ->whereMonth('returned_at', substr($month, 5, 2))
+            ->count();
+    }
+
+    // count reservations
+    public function count(): int
+    {
+        return $this->model->count();
+    }
 }

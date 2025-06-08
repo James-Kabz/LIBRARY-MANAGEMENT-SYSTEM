@@ -30,7 +30,7 @@ class CategoryService
      */
     public function getAllCategories(): AnonymousResourceCollection
     {
-        $categories = $this->categoryRepository->all();
+        $categories = $this->categoryRepository->getAllWithBooksCount();
         return CategoryResource::collection($categories);
     }
 
@@ -42,7 +42,7 @@ class CategoryService
      */
     public function getCategoryById(int $id): CategoryResource
     {
-        $category = $this->categoryRepository->findById($id);
+        $category = $this->categoryRepository->findByIdWithBooksCount($id);
         return new CategoryResource($category);
     }
 
@@ -68,7 +68,7 @@ class CategoryService
     public function updateCategory(int $id, array $data): CategoryResource
     {
         $this->categoryRepository->update($id, $data);
-        $category = $this->categoryRepository->findById($id);
+        $category = $this->categoryRepository->findByIdWithBooksCount($id);
         return new CategoryResource($category);
     }
 
@@ -81,5 +81,26 @@ class CategoryService
     public function deleteCategory(int $id): bool
     {
         return $this->categoryRepository->deleteById($id);
+    }
+
+    /**
+     * Get total categories count.
+     *
+     * @return int
+     */
+    public function getTotalCategoriesCount(): int
+    {
+        return $this->categoryRepository->count();
+    }
+
+    /**
+     * Get categories with statistics.
+     *
+     * @return AnonymousResourceCollection
+     */
+    public function getCategoriesWithStats(): AnonymousResourceCollection
+    {
+        $categories = $this->categoryRepository->getCategoriesWithStats();
+        return CategoryResource::collection($categories);
     }
 }

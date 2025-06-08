@@ -14,4 +14,7 @@ interface AuthorRepositoryInterface extends BaseRepositoryInterface
      * @return LengthAwarePaginator
      */
     public function search(string $query, int $perPage = 15): LengthAwarePaginator;
+
+    // count authors
+    public function count(): int;
 }

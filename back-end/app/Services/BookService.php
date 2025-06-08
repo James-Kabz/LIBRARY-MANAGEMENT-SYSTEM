@@ -166,4 +166,47 @@ class BookService
             throw new BookNotFoundException();
         }
     }
+
+    /**
+     * Get total books count.
+     *
+     * @return int
+     */
+    public function getTotalBooksCount(): int
+    {
+        return $this->bookRepository->count();
+    }
+
+    /**
+     * Get available books count.
+     *
+     * @return int
+     */
+    public function getAvailableBooksCount(): int
+    {
+        return $this->bookRepository->countAvailableBooks();
+    }
+
+    /**
+     * Get popular books.
+     *
+     * @param int $limit
+     * @return AnonymousResourceCollection
+     */
+    public function getPopularBooks(int $limit = 5): AnonymousResourceCollection
+    {
+        $books = $this->bookRepository->getPopularBooks($limit);
+        return BookResource::collection($books);
+    }
+
+    /**
+     * Get books added in a specific month.
+     *
+     * @param string $month (Y-m format)
+     * @return int
+     */
+    public function getBooksAddedInMonth(string $month): int
+    {
+        return $this->bookRepository->countBooksAddedInMonth($month);
+    }
 }
