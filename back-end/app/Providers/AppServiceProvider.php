@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(queueable(function (ReservationOverdue $event) {
             $event->reservation->user->notify(new OverdueBookNotification($event->reservation));
         })->onConnection(env('QUEUE_CONNECTION')));
-        
+
         Event::listen(queueable(function (BookReserved $event) {
             $event->reservation->user->notify(new BookReservationConfirmation($event->reservation));
         })->onConnection(env('QUEUE_CONNECTION')));
@@ -55,13 +55,5 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(queueable(function (BookReturned $event) {
             $event->reservation->user->notify(new BookReturnConfirmation($event->reservation));
         })->onConnection(env('QUEUE_CONNECTION')));
-        
-        // if ($this->app->runningInConsole())
-        // {
-        //     $this->app->resolving(Schedule::class, function (Schedule $schedule) {
-        //         $schedule->job(new CheckOverdueReservations())
-        //         ->withoutOverlapping();
-        //     });
-        // }
     }
 }
