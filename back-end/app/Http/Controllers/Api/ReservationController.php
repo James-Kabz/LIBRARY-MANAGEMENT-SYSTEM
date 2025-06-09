@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reservation\StoreReservationRequest;
+use App\Jobs\CheckOverdueReservations;
 use App\Services\ReservationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Cache;
 
 class ReservationController extends Controller implements HasMiddleware
 {
@@ -38,6 +40,23 @@ class ReservationController extends Controller implements HasMiddleware
         $this->reservationService = $reservationService;
     }
 
+    /**
+     * Trigger overdue check with optional immediate execution
+     */
+    private function triggerOverdueCheck(bool $immediate = false): void
+    {
+        if ($immediate) {
+            CheckOverdueReservations::dispatch()->delay(now()->addSeconds(5));
+        } else {
+            $cacheKey = 'overdue_check_triggered';
+            $cacheDuration = 300; // 5 minutes
+
+            if (!Cache::has($cacheKey)) {
+                CheckOverdueReservations::dispatch()->delay(now()->addSeconds(10));
+                Cache::put($cacheKey, true, $cacheDuration);
+            }
+        }
+    }
     /**
      * Display a listing of the resource.
      */
@@ -75,7 +94,7 @@ class ReservationController extends Controller implements HasMiddleware
     public function returnBook(int $id): JsonResponse
     {
         $reservation = $this->reservationService->returnBook($id);
-        
+        $this->triggerOverdueCheck(true);
         return api_success($reservation, 'Book returned successfully');
     }
 

@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     checkAuth()
-  }, [])
+  }, [checkAuth])
 
   if (isLoading) {
     return (

@@ -26,7 +26,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
 // Protected routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum','check.overdue'])->group(function () {
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
@@ -54,8 +54,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('categories', CategoryController::class);
     
     // Reservation routes
-    Route::apiResource('reservations', ReservationController::class)->except(['update', 'destroy']);
-    Route::patch('/reservations/{id}/return', [ReservationController::class, 'returnBook']);
-    Route::get('/reservations/user/{userId}', [ReservationController::class, 'byUser']);
-    Route::get('/reservations/book/{bookId}', [ReservationController::class, 'byBook']);
+    // Route::middleware('check.overdue')->group(function () {
+        Route::apiResource('reservations', ReservationController::class)->except(['update', 'destroy']);
+        Route::patch('/reservations/{id}/return', [ReservationController::class, 'returnBook']);
+        Route::get('/reservations/user/{userId}', [ReservationController::class, 'byUser']);
+        Route::get('/reservations/book/{bookId}', [ReservationController::class, 'byBook']);
+        
+        // Also apply to user overdue books route since it's related
+        Route::get('/users/overdue/books', [UserController::class, 'overdueUsers']);
+    // });
 });

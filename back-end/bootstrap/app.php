@@ -25,8 +25,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'check.overdue' => App\Http\Middleware\CheckOverdueReservationsMiddleware::class
         ]);
     })
+    ->withEvents([
+        __DIR__.'../app/Listeners',
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         // error logging
         $exceptions->level(SystemErrorException::class, LogLevel::CRITICAL);

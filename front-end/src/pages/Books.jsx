@@ -42,7 +42,7 @@ export const Books = () => {
   useEffect(() => {
     fetchBooks()
     fetchAuthorsAndCategories()
-  }, [])
+  }, [fetchBooks])
 
   const fetchAuthorsAndCategories = async () => {
     try {
