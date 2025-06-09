@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\User\UserAuthenticationException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
@@ -50,6 +51,15 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        if (!$user)
+        {
+            throw new UserAuthenticationException();
+        }
+
+        if (!$token) {
+            throw UserAuthenticationException::invalidToken();
+        }
 
         return api_success([
             'user' => new UserResource($user),

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\AuthorNotFoundException;
 use App\Http\Resources\AuthorResource;
 use App\Repositories\Interfaces\AuthorRepositoryInterface;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -43,8 +44,12 @@ class AuthorService
      */
     public function getAuthorById(int $id): AuthorResource
     {
-        $author = $this->authorRepository->findById($id, ['*'], ['books']);
-        return new AuthorResource($author);
+        try {
+            $author = $this->authorRepository->findById($id, ['*'], ['books']);
+            return new AuthorResource($author);
+        } catch (\Exception $th) {
+            throw new AuthorNotFoundException();
+        }
     }
 
     /**

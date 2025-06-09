@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\AuthorNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Author\StoreAuthorRequest;
 use App\Http\Requests\Author\UpdateAuthorRequest;
@@ -46,6 +47,11 @@ class AuthorController extends Controller implements HasMiddleware
     {
         $perPage = $request->get('per_page', 15);
         $authors = $this->authorService->getAllAuthors($perPage);
+
+        if (!$authors)
+        {
+            throw AuthorNotFoundException::authorsNotFound();
+        }
         
         return api_success($authors, 'Authors retrieved successfully');
     }
