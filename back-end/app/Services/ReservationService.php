@@ -119,7 +119,7 @@ class ReservationService
             $reservations = $this->reservationRepository->getByBook($bookId, $perPage);
             return ReservationResource::collection($reservations);
         } catch (\Exception $e) {
-            throw new BookNotFoundException();
+            throw BookNotFoundException::bookNotAvailableForReservation();
         }
     }
 
@@ -130,7 +130,6 @@ class ReservationService
      * @return ReservationResource
      * @throws BookNotFoundException
      * @throws UserNotFoundException
-     * @throws BookNotAvailableException
      */
     public function createReservation(array $data): ReservationResource
     {
@@ -143,7 +142,7 @@ class ReservationService
             
             // Check if book is available
             if (!$book->isAvailable()) {
-                throw new BookNotAvailableException();
+                throw BookNotFoundException::bookNotAvailableForReservation();
             }
             
             // Set reservation data
@@ -165,9 +164,7 @@ class ReservationService
             throw $e;
         } catch (UserNotFoundException $e) {
             throw $e;
-        } catch (BookNotAvailableException $e) {
-            throw $e;
-        }
+        } 
     }
 
     /**

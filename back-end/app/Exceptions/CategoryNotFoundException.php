@@ -2,12 +2,10 @@
 
 namespace App\Exceptions;
 
-use Exception;
 
-class CategoryNotFoundException extends Exception
+class CategoryNotFoundException extends BaseCustomException
 {
-     public function __construct(string $message = "Category not found", int $code = 404)
-    {
-        parent::__construct($message, $code);
-    }
+    protected $statusCode = 404;
+
+    protected $message = "Category not found";
 }

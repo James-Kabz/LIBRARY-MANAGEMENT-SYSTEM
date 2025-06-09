@@ -2,12 +2,10 @@
 
 namespace App\Exceptions;
 
-use Exception;
 
-class ReservationNotFoundException extends Exception
+class ReservationNotFoundException extends BaseCustomException
 {
-    public function __construct(string $message = "Reservation not found", int $code = 404)
-    {
-        parent::__construct($message, $code);
-    }
+    protected $statusCode = 404;
+
+    protected $message = "Reservation not found";
 }

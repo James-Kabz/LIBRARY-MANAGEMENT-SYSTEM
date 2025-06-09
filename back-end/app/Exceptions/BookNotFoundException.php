@@ -2,12 +2,27 @@
 
 namespace App\Exceptions;
 
-use Exception;
 
-class BookNotFoundException extends Exception
+class BookNotFoundException extends BaseCustomException
 {
-    public function __construct(string $message = "Book not found", int $code = 404)
+    protected $statusCode = 404;
+
+    protected $message = 'Book not found';
+
+    public static function bookNotFound(): self
     {
-        parent::__construct($message, $code);
+        $e = new self();
+        $e->message = 'Book not found';
+        $e->statusCode = 404;
+        return $e;
     }
+
+    public static function bookNotAvailableForReservation(): self
+    {
+        $e = new self();
+        $e->message = 'Book is not available for reservation';
+        $e->statusCode = 400;
+        return $e;
+    }
+
 }

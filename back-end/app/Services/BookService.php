@@ -49,7 +49,7 @@ class BookService
             $book = $this->bookRepository->findById($id, ['*'], ['author', 'categories']);
             return new BookResource($book);
         } catch (\Exception $e) {
-            throw new BookNotFoundException();
+            throw  BookNotFoundException::bookNotFound();
         }
     }
 
@@ -147,7 +147,7 @@ class BookService
             
             return new BookResource($book);
         } catch (\Exception $e) {
-            throw new BookNotFoundException();
+            throw BookNotFoundException::bookNotFound();
         }
     }
 
@@ -163,7 +163,7 @@ class BookService
         try {
             return $this->bookRepository->deleteById($id);
         } catch (\Exception $e) {
-            throw new BookNotFoundException();
+            throw BookNotFoundException::bookNotFound();
         }
     }
 
